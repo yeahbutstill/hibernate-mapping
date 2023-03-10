@@ -1,5 +1,7 @@
 com/yeahbutstill/hibernatemapping/domain/BaseEntity.class
+com/yeahbutstill/hibernatemapping/domain/Address.class
+com/yeahbutstill/hibernatemapping/domain/OrderStatus.class
 com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepository.class
 com/yeahbutstill/hibernatemapping/domain/OrderHeader.class
-com/yeahbutstill/hibernatemapping/domain/Address.class
 com/yeahbutstill/hibernatemapping/HibernateMappingApplication.class
+com/yeahbutstill/hibernatemapping/controller/OrderRestController.class

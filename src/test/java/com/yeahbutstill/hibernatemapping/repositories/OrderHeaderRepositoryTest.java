@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,19 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Testcontainers
 class OrderHeaderRepositoryTest {
 
-    //    @Container
-//    public static PostgreSQLContainer<?> pgsql = new PostgreSQLContainer<>("postgres:14");
+    @Container
+    public static PostgreSQLContainer<?> pgsql = new PostgreSQLContainer<>("postgres:14");
     @Autowired
     public OrderHeaderRepository orderHeaderRepository;
 
-//    @DynamicPropertySource
-//    public static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
-//
-//        registry.add("spring.datasource.url", pgsql::getJdbcUrl);
-//        registry.add("spring.datasource.username", pgsql::getUsername);
-//        registry.add("spring.datasource.password", pgsql::getPassword);
-//
-//    }
+    @DynamicPropertySource
+    public static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
+
+        registry.add("spring.datasource.url", pgsql::getJdbcUrl);
+        registry.add("spring.datasource.username", pgsql::getUsername);
+        registry.add("spring.datasource.password", pgsql::getPassword);
+
+    }
 
     @Test
     void testSaveOrder() {
@@ -44,6 +48,7 @@ class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder);
         assertNotNull(fetchedOrder.getId());
         assertNotNull(fetchedOrder.getCreatedDate());
+        assertNotNull(fetchedOrder.getLastModifiedDate());
     }
 }
 
