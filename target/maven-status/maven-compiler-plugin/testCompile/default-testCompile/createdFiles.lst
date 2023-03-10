@@ -1,2 +1,4 @@
 com/yeahbutstill/hibernatemapping/HibernateMappingApplicationTests.class
+com/yeahbutstill/hibernatemapping/domain/OrderHeaderTest.class
 com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepositoryTest.class
+com/yeahbutstill/hibernatemapping/repositories/OrderRestController.class

@@ -1,2 +1,3 @@
+/home/yeahbutstill/IdeaProjects/hibernate-mapping/src/test/java/com/yeahbutstill/hibernatemapping/domain/OrderHeaderTest.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/test/java/com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepositoryTest.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/test/java/com/yeahbutstill/hibernatemapping/HibernateMappingApplicationTests.java

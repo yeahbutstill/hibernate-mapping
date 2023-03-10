@@ -24,7 +24,7 @@ class OrderHeaderRepositoryTest {
     public static PostgreSQLContainer<?> pgsql = new PostgreSQLContainer<>("postgres:14");
 
     @DynamicPropertySource
-    static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
+    public static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
 
         registry.add("spring.datasource.url", pgsql::getJdbcUrl);
         registry.add("spring.datasource.username", pgsql::getUsername);
@@ -33,7 +33,7 @@ class OrderHeaderRepositoryTest {
     }
 
     @Autowired
-    OrderHeaderRepository orderHeaderRepository;
+    public OrderHeaderRepository orderHeaderRepository;
 
     @Test
     void testSaveOrder() {
@@ -50,3 +50,4 @@ class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getId());
     }
 }
+

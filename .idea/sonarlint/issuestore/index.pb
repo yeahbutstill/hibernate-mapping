@@ -1,7 +1,8 @@
 
-7
-pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
-9
-	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 ‡
 Wsrc/main/java/com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepository.java,5/8/58c95884bc081de337aba0f39ea76acd806b02ce
+v
+Fsrc/main/java/com/yeahbutstill/hibernatemapping/domain/BaseEntity.java,9/0/90a24c7c54e21c860fa1a7f5385b9536d28d1a26
+:
+
+.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302

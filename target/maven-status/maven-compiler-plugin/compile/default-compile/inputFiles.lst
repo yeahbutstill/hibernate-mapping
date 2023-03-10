@@ -1,3 +1,5 @@
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepository.java
+/home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/Address.java
+/home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/BaseEntity.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/HibernateMappingApplication.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderHeader.java
