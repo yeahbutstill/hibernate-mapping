@@ -2,8 +2,6 @@ package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
 @AttributeOverrides({
         @AttributeOverride(
@@ -49,6 +47,9 @@ public class OrderHeader extends BaseEntity {
     @Embedded
     private Address billToAddress;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
 
     public String getCustomer() {
         return customer;
@@ -74,6 +75,14 @@ public class OrderHeader extends BaseEntity {
         this.billToAddress = billToAddress;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,18 +98,22 @@ public class OrderHeader extends BaseEntity {
         if (getCustomer() != null ? !getCustomer().equals(that.getCustomer()) : that.getCustomer() != null) {
             return false;
         }
-        if (!Objects.equals(shippingAddress, that.shippingAddress)) {
+        if (getShippingAddress() != null ? !getShippingAddress().equals(that.getShippingAddress()) : that.getShippingAddress() != null) {
             return false;
         }
-        return Objects.equals(billToAddress, that.billToAddress);
+        if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null) {
+            return false;
+        }
+        return getOrderStatus() == that.getOrderStatus();
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
-        result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
-        result = 31 * result + (billToAddress != null ? billToAddress.hashCode() : 0);
+        result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
+        result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
+        result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
         return result;
     }
 }
