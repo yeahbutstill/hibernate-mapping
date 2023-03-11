@@ -16,7 +16,7 @@ class OrderRestController {
 
     @GetMapping("/orders")
     Iterable<OrderHeader> get() {
-        return this.repository.findAll();
+        return repository.findAll();
     }
 
 }

@@ -1,6 +1,8 @@
 package com.yeahbutstill.hibernatemapping.repositories;
 
-import com.yeahbutstill.hibernatemapping.domain.OrderHeader;
+import com.yeahbutstill.hibernatemapping.domain.Product;
+import com.yeahbutstill.hibernatemapping.domain.ProductStatus;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,18 +14,17 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @ActiveProfiles("local")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-class OrderHeaderRepositoryTest {
+class ProductRepositoryTest {
 
     @Container
     public static PostgreSQLContainer<?> pgsql = new PostgreSQLContainer<>("postgres:14");
+
     @Autowired
-    public OrderHeaderRepository orderHeaderRepository;
+    public ProductRepository productRepository;
 
     @DynamicPropertySource
     public static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
@@ -31,22 +32,25 @@ class OrderHeaderRepositoryTest {
         registry.add("spring.datasource.url", pgsql::getJdbcUrl);
         registry.add("spring.datasource.username", pgsql::getUsername);
         registry.add("spring.datasource.password", pgsql::getPassword);
+
     }
 
     @Test
-    void testSaveOrder() {
-        OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("New Customer");
-        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
+    void testSaveProduct() {
 
-        assertNotNull(savedOrder);
-        assertNotNull(savedOrder.getId());
+        Product newProduct = new Product();
+        newProduct.setDescription("New Product");
+        newProduct.setProductStatus(ProductStatus.NEW);
 
-        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+        Product savedProduct = productRepository.save(newProduct);
+        Product fetchedProduct = productRepository.getReferenceById(savedProduct.getId());
 
-        assertNotNull(fetchedOrder);
-        assertNotNull(fetchedOrder.getId());
-        assertNotNull(fetchedOrder.getCreatedDate());
-        assertNotNull(fetchedOrder.getLastModifiedDate());
+        Assertions.assertNotNull(fetchedProduct);
+        Assertions.assertNotNull(fetchedProduct.getDescription());
+        Assertions.assertNotNull(fetchedProduct.getProductStatus());
+        Assertions.assertNotNull(fetchedProduct.getCreatedDate());
+        Assertions.assertNotNull(fetchedProduct.getLastModifiedDate());
+
     }
+
 }

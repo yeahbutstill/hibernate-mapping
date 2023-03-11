@@ -45,7 +45,6 @@ public abstract class BaseEntity {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -58,10 +57,14 @@ public abstract class BaseEntity {
         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
             return false;
         }
-        if (getCreatedDate() != null ? !getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() != null) {
+        if (getCreatedDate() != null
+                ? !getCreatedDate().equals(that.getCreatedDate())
+                : that.getCreatedDate() != null) {
             return false;
         }
-        return getLastModifiedDate() != null ? getLastModifiedDate().equals(that.getLastModifiedDate()) : that.getLastModifiedDate() == null;
+        return getLastModifiedDate() != null
+                ? getLastModifiedDate().equals(that.getLastModifiedDate())
+                : that.getLastModifiedDate() == null;
     }
 
     @Override

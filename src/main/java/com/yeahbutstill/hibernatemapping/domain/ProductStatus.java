@@ -1,7 +1,7 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
-public enum OrderStatus {
+public enum ProductStatus {
   NEW,
-  IN_PROCESS,
-  COMPLETE
+  IN_STOCK,
+  DISCONTINUED
 }
