@@ -2,7 +2,9 @@ package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,7 +24,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 public class OrderHeader extends BaseEntity {
 
@@ -37,7 +38,24 @@ public class OrderHeader extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "orderHeader")
+    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST})
+    @ToString.Exclude
     private Set<OrderLine> orderLines;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        OrderHeader that = (OrderHeader) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -43,7 +43,6 @@ class OrderHeaderRepositoryTest {
 
         OrderHeader orderHeader = new OrderHeader();
         orderHeader.setCustomer("Dede mario bros");
-        OrderHeader saveOrderByDedeMarioBros = orderHeaderRepository.save(orderHeader);
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(100);
@@ -51,10 +50,19 @@ class OrderHeaderRepositoryTest {
         orderHeader.setOrderLines(Set.of(orderLine));
         orderLine.setOrderHeader(orderHeader);
 
+        OrderHeader saveOrderByDedeMarioBros = orderHeaderRepository.save(orderHeader);
+
+        orderHeaderRepository.flush();
+
         assertNotNull(saveOrderByDedeMarioBros);
         assertNotNull(saveOrderByDedeMarioBros.getId());
         assertNotNull(saveOrderByDedeMarioBros.getOrderLines());
         assertEquals(1, saveOrderByDedeMarioBros.getOrderLines().size());
+
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(saveOrderByDedeMarioBros.getId());
+
+        assertNotNull(fetchedOrder);
+        assertEquals(fetchedOrder.getOrderLines().size(), 1);
 
     }
 
