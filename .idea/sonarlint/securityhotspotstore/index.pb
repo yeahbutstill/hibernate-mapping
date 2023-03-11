@@ -22,8 +22,6 @@ w
 Gsrc/main/java/com/yeahbutstill/hibernatemapping/domain/OrderStatus.java,8/a/8a4a22a20f9da57f73e4e7f2b4be428363342254
 y
 Isrc/main/java/com/yeahbutstill/hibernatemapping/domain/ProductStatus.java,a/7/a7716c8dd14df94f191fab4188e3e6bd4da67752
-s
-Csrc/main/java/com/yeahbutstill/hibernatemapping/domain/Product.java,e/8/e8108c8b2940c6af472b8ed96839a15cafd81c5e
 7
 pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
 ƒ

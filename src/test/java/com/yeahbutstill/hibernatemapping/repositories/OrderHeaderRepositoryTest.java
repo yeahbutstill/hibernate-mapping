@@ -2,6 +2,9 @@ package com.yeahbutstill.hibernatemapping.repositories;
 
 import com.yeahbutstill.hibernatemapping.domain.OrderHeader;
 import com.yeahbutstill.hibernatemapping.domain.OrderLine;
+import com.yeahbutstill.hibernatemapping.domain.Product;
+import com.yeahbutstill.hibernatemapping.domain.ProductStatus;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -30,12 +33,28 @@ class OrderHeaderRepositoryTest {
     @Autowired
     public OrderHeaderRepository orderHeaderRepository;
 
+    @Autowired
+    public ProductRepository productRepository;
+
+    public Product product;
+
     @DynamicPropertySource
     public static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
 
         registry.add("spring.datasource.url", pgsql::getJdbcUrl);
         registry.add("spring.datasource.username", pgsql::getUsername);
         registry.add("spring.datasource.password", pgsql::getPassword);
+    }
+
+    @BeforeEach
+    void setup() {
+
+        Product newProduct1 = new Product();
+        newProduct1.setProductStatus(ProductStatus.NEW);
+        newProduct1.setDescription("Test dede mario bros product");
+
+        product = productRepository.saveAndFlush(newProduct1);
+
     }
 
     @Test
@@ -46,6 +65,7 @@ class OrderHeaderRepositoryTest {
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(100);
+        orderLine.setProduct(product);
 
         orderHeader.setOrderLines(Set.of(orderLine));
         orderLine.setOrderHeader(orderHeader);
@@ -62,7 +82,7 @@ class OrderHeaderRepositoryTest {
         OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(saveOrderByDedeMarioBros.getId());
 
         assertNotNull(fetchedOrder);
-        assertEquals(fetchedOrder.getOrderLines().size(), 1);
+        assertEquals(1, fetchedOrder.getOrderLines().size());
 
     }
 
