@@ -14,17 +14,7 @@ Usrc/test/java/com/yeahbutstill/hibernatemapping/HibernateMappingApplicationTest
 Psrc/main/java/com/yeahbutstill/hibernatemapping/HibernateMappingApplication.java,3/a/3ad192e74a14c82abff64171b4d4f78dfcec5f93
 P
  src/main/scripts/mysql-setup.sql,8/4/8469be3dbd995430c283e8d32726796286127248
-s
-Csrc/main/java/com/yeahbutstill/hibernatemapping/domain/Address.java,0/2/02253543e2413e68f39e362001bd777049124a51
 ƒ
 Ssrc/main/java/com/yeahbutstill/hibernatemapping/controller/OrderRestController.java,8/f/8fc981e81d730ddc3fc72adb9bf5222580f3b055
-w
-Gsrc/main/java/com/yeahbutstill/hibernatemapping/domain/OrderStatus.java,8/a/8a4a22a20f9da57f73e4e7f2b4be428363342254
-y
-Isrc/main/java/com/yeahbutstill/hibernatemapping/domain/ProductStatus.java,a/7/a7716c8dd14df94f191fab4188e3e6bd4da67752
 7
 pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
-ƒ
-Ssrc/main/java/com/yeahbutstill/hibernatemapping/repositories/ProductRepository.java,1/3/134016efd4c21c239d70fefb5c7498d38ef352ed
-‡
-Wsrc/test/java/com/yeahbutstill/hibernatemapping/repositories/ProductRepositoryTest.java,d/2/d2bf4bda7579f7b318104d03c4c151df9f45f62d

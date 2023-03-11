@@ -1,6 +1,9 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -10,30 +13,27 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @ToString
-public class Product extends BaseEntity {
+public class Category extends BaseEntity {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private ProductStatus productStatus;
-
-    @ManyToMany
+    @OneToMany
     @JoinTable(name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     @ToString.Exclude
-    private Set<Category> categories;
+    private Set<Product> products;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Product product = (Product) o;
-        return getId() != null && Objects.equals(getId(), product.getId());
+        Category category = (Category) o;
+        return getId() != null && Objects.equals(getId(), category.getId());
     }
 
     @Override

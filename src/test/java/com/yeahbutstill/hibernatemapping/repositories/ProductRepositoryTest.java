@@ -2,7 +2,6 @@ package com.yeahbutstill.hibernatemapping.repositories;
 
 import com.yeahbutstill.hibernatemapping.domain.Product;
 import com.yeahbutstill.hibernatemapping.domain.ProductStatus;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,6 +12,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("local")
 @DataJpaTest
@@ -36,6 +37,15 @@ class ProductRepositoryTest {
     }
 
     @Test
+    void testGetCategory() {
+
+        Product product1 = productRepository.findByDescription("PRODUCT1");
+        assertNotNull(product1);
+        assertNotNull(product1.getDescription());
+
+    }
+
+    @Test
     void testSaveProduct() {
 
         Product newProduct = new Product();
@@ -45,11 +55,11 @@ class ProductRepositoryTest {
         Product savedProduct = productRepository.save(newProduct);
         Product fetchedProduct = productRepository.getReferenceById(savedProduct.getId());
 
-        Assertions.assertNotNull(fetchedProduct);
-        Assertions.assertNotNull(fetchedProduct.getDescription());
-        Assertions.assertNotNull(fetchedProduct.getProductStatus());
-        Assertions.assertNotNull(fetchedProduct.getCreatedDate());
-        Assertions.assertNotNull(fetchedProduct.getLastModifiedDate());
+        assertNotNull(fetchedProduct);
+        assertNotNull(fetchedProduct.getDescription());
+        assertNotNull(fetchedProduct.getProductStatus());
+        assertNotNull(fetchedProduct.getCreatedDate());
+        assertNotNull(fetchedProduct.getLastModifiedDate());
 
     }
 
