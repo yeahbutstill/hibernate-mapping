@@ -16,8 +16,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -67,8 +65,10 @@ class OrderHeaderRepositoryTest {
         orderLine.setQuantityOrdered(100);
         orderLine.setProduct(product);
 
-        orderHeader.setOrderLines(Set.of(orderLine));
-        orderLine.setOrderHeader(orderHeader);
+        //orderHeader.setOrderLines(Set.of(orderLine));
+        //orderLine.setOrderHeader(orderHeader);
+
+        orderHeader.addOrderLine(orderLine);
 
         OrderHeader saveOrderByDedeMarioBros = orderHeaderRepository.save(orderHeader);
 
