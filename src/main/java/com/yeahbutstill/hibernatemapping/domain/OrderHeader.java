@@ -1,34 +1,50 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
+
 
 @Entity
 @AttributeOverrides({
-        @AttributeOverride(name = "shippingAddress.address", column = @Column(name = "shipping_address")),
-        @AttributeOverride(name = "shippingAddress.city", column = @Column(name = "shipping_city")),
-        @AttributeOverride(name = "shippingAddress.state", column = @Column(name = "shipping_state")),
+        @AttributeOverride(
+                name = "shippingAddress.address",
+                column = @Column(name = "shipping_address")
+        ),
+        @AttributeOverride(
+                name = "shippingAddress.city",
+                column = @Column(name = "shipping_city")
+        ),
+        @AttributeOverride(
+                name = "shippingAddress.state",
+                column = @Column(name = "shipping_state")
+        ),
         @AttributeOverride(
                 name = "shippingAddress.zipCode",
-                column = @Column(name = "shipping_zip_code")),
-        @AttributeOverride(name = "billToAddress.address", column = @Column(name = "bill_to_address")),
-        @AttributeOverride(name = "billToAddress.city", column = @Column(name = "bill_to_city")),
-        @AttributeOverride(name = "billToAddress.state", column = @Column(name = "bill_to_state")),
-        @AttributeOverride(name = "billToAddress.zipCode", column = @Column(name = "bill_to_zip_code"))
+                column = @Column(name = "shipping_zip_code")
+        ),
+        @AttributeOverride(
+                name = "billToAddress.address",
+                column = @Column(name = "bill_to_address")
+        ),
+        @AttributeOverride(
+                name = "billToAddress.city",
+                column = @Column(name = "bill_to_city")
+        ),
+        @AttributeOverride(
+                name = "billToAddress.state",
+                column = @Column(name = "bill_to_state")
+        ),
+        @AttributeOverride(
+                name = "billToAddress.zipCode",
+                column = @Column(name = "bill_to_zip_code")
+        )
 })
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
 public class OrderHeader extends BaseEntity {
 
-    private String customer;
+    @ManyToOne
+    private Customer customer;
 
     @Embedded
     private Address shippingAddress;
@@ -39,20 +55,67 @@ public class OrderHeader extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "orderHeader", cascade = {CascadeType.PERSIST})
-    @ToString.Exclude
+    @OneToMany(mappedBy = "orderHeader", cascade = CascadeType.PERSIST)
     private Set<OrderLine> orderLines;
 
-    // this association helper method
-    public void addOrderLine(OrderLine orderLine) {
+    @OneToOne
+    private OrderApproval orderApproval;
 
+    public OrderApproval getOrderApproval() {
+        return orderApproval;
+    }
+
+    public void setOrderApproval(OrderApproval orderApproval) {
+        this.orderApproval = orderApproval;
+    }
+
+    public void addOrderLine(OrderLine orderLine) {
         if (orderLines == null) {
             orderLines = new HashSet<>();
         }
 
         orderLines.add(orderLine);
         orderLine.setOrderHeader(this);
+    }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Address getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public Address getBillToAddress() {
+        return billToAddress;
+    }
+
+    public void setBillToAddress(Address billToAddress) {
+        this.billToAddress = billToAddress;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public Set<OrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public void setOrderLines(Set<OrderLine> orderLines) {
+        this.orderLines = orderLines;
     }
 
     @Override
@@ -60,15 +123,38 @@ public class OrderHeader extends BaseEntity {
         if (this == o) {
             return true;
         }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+        if (!(o instanceof OrderHeader)) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
+
         OrderHeader that = (OrderHeader) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+
+        if (getCustomer() != null ? !getCustomer().equals(that.getCustomer()) : that.getCustomer() != null) {
+            return false;
+        }
+        if (getShippingAddress() != null ? !getShippingAddress().equals(that.getShippingAddress()) : that.getShippingAddress() != null) {
+            return false;
+        }
+        if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null) {
+            return false;
+        }
+        if (getOrderStatus() != that.getOrderStatus()) {
+            return false;
+        }
+        return getOrderLines() != null ? getOrderLines().equals(that.getOrderLines()) : that.getOrderLines() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
+        result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
+        result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
+        result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
+        result = 31 * result + (getOrderLines() != null ? getOrderLines().hashCode() : 0);
+        return result;
     }
 }

@@ -1,20 +1,12 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
 
-import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
-public class Product extends BaseEntity {
 
+@Entity
+public class Product extends BaseEntity {
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -23,25 +15,58 @@ public class Product extends BaseEntity {
     @ManyToMany
     @JoinTable(name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    @ToString.Exclude
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ProductStatus getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(ProductStatus productStatus) {
+        this.productStatus = productStatus;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+        if (!(o instanceof Product)) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
+
         Product product = (Product) o;
-        return getId() != null && Objects.equals(getId(), product.getId());
+
+        if (getDescription() != null ? !getDescription().equals(product.getDescription()) : product.getDescription() != null) {
+            return false;
+        }
+        return getProductStatus() == product.getProductStatus();
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getProductStatus() != null ? getProductStatus().hashCode() : 0);
+        return result;
     }
 }

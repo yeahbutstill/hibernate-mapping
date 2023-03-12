@@ -1,9 +1,6 @@
 package com.yeahbutstill.hibernatemapping.repositories;
 
-import com.yeahbutstill.hibernatemapping.domain.OrderHeader;
-import com.yeahbutstill.hibernatemapping.domain.OrderLine;
-import com.yeahbutstill.hibernatemapping.domain.Product;
-import com.yeahbutstill.hibernatemapping.domain.ProductStatus;
+import com.yeahbutstill.hibernatemapping.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,9 @@ class OrderHeaderRepositoryTest {
     @Autowired
     public ProductRepository productRepository;
 
+    @Autowired
+    public CustomerRepository customerRepository;
+
     public Product product;
 
     @DynamicPropertySource
@@ -45,52 +45,51 @@ class OrderHeaderRepositoryTest {
     }
 
     @BeforeEach
-    void setup() {
-
-        Product newProduct1 = new Product();
-        newProduct1.setProductStatus(ProductStatus.NEW);
-        newProduct1.setDescription("Test dede mario bros product");
-
-        product = productRepository.saveAndFlush(newProduct1);
-
+    void setUp() {
+        Product newProduct = new Product();
+        newProduct.setProductStatus(ProductStatus.NEW);
+        newProduct.setDescription("test product");
+        product = productRepository.saveAndFlush(newProduct);
     }
 
     @Test
     void testSaveOrderWithLine() {
-
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("Dede mario bros");
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
 
         OrderLine orderLine = new OrderLine();
-        orderLine.setQuantityOrdered(100);
+        orderLine.setQuantityOrdered(5);
         orderLine.setProduct(product);
-
-        //orderHeader.setOrderLines(Set.of(orderLine));
-        //orderLine.setOrderHeader(orderHeader);
 
         orderHeader.addOrderLine(orderLine);
 
-        OrderHeader saveOrderByDedeMarioBros = orderHeaderRepository.save(orderHeader);
+        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         orderHeaderRepository.flush();
 
-        assertNotNull(saveOrderByDedeMarioBros);
-        assertNotNull(saveOrderByDedeMarioBros.getId());
-        assertNotNull(saveOrderByDedeMarioBros.getOrderLines());
-        assertEquals(1, saveOrderByDedeMarioBros.getOrderLines().size());
+        assertNotNull(savedOrder);
+        assertNotNull(savedOrder.getId());
+        assertNotNull(savedOrder.getOrderLines());
+        assertEquals(savedOrder.getOrderLines().size(), 1);
 
-        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(saveOrderByDedeMarioBros.getId());
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
 
         assertNotNull(fetchedOrder);
-        assertEquals(1, fetchedOrder.getOrderLines().size());
-
+        assertEquals(fetchedOrder.getOrderLines().size(), 1);
     }
 
     @Test
     void testSaveOrder() {
-
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("New Customer");
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         assertNotNull(savedOrder);
@@ -102,6 +101,5 @@ class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getId());
         assertNotNull(fetchedOrder.getCreatedDate());
         assertNotNull(fetchedOrder.getLastModifiedDate());
-
     }
 }
