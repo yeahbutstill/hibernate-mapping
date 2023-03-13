@@ -4,11 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import lombok.*;
+import org.hibernate.Hibernate;
 
+import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Category extends BaseEntity {
 
     private String description;
@@ -17,45 +25,19 @@ public class Category extends BaseEntity {
     @JoinTable(name = "product_category",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @ToString.Exclude
     private Set<Product> products;
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Category)) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Category category = (Category) o;
-
-        return getDescription() != null ? getDescription().equals(category.getDescription()) : category.getDescription() == null;
+        return getId() != null && Objects.equals(getId(), category.getId());
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        return result;
+        return getClass().hashCode();
     }
 }

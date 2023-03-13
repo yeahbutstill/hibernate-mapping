@@ -1,8 +1,11 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -41,6 +44,11 @@ import java.util.Set;
                 column = @Column(name = "bill_to_zip_code")
         )
 })
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
 public class OrderHeader extends BaseEntity {
 
     @ManyToOne
@@ -56,18 +64,11 @@ public class OrderHeader extends BaseEntity {
     private OrderStatus orderStatus;
 
     @OneToMany(mappedBy = "orderHeader", cascade = CascadeType.PERSIST)
+    @ToString.Exclude
     private Set<OrderLine> orderLines;
 
     @OneToOne
     private OrderApproval orderApproval;
-
-    public OrderApproval getOrderApproval() {
-        return orderApproval;
-    }
-
-    public void setOrderApproval(OrderApproval orderApproval) {
-        this.orderApproval = orderApproval;
-    }
 
     public void addOrderLine(OrderLine orderLine) {
         if (orderLines == null) {
@@ -78,83 +79,16 @@ public class OrderHeader extends BaseEntity {
         orderLine.setOrderHeader(this);
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Address getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(Address shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-
-    public Address getBillToAddress() {
-        return billToAddress;
-    }
-
-    public void setBillToAddress(Address billToAddress) {
-        this.billToAddress = billToAddress;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Set<OrderLine> getOrderLines() {
-        return orderLines;
-    }
-
-    public void setOrderLines(Set<OrderLine> orderLines) {
-        this.orderLines = orderLines;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof OrderHeader)) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         OrderHeader that = (OrderHeader) o;
-
-        if (getCustomer() != null ? !getCustomer().equals(that.getCustomer()) : that.getCustomer() != null) {
-            return false;
-        }
-        if (getShippingAddress() != null ? !getShippingAddress().equals(that.getShippingAddress()) : that.getShippingAddress() != null) {
-            return false;
-        }
-        if (getBillToAddress() != null ? !getBillToAddress().equals(that.getBillToAddress()) : that.getBillToAddress() != null) {
-            return false;
-        }
-        if (getOrderStatus() != that.getOrderStatus()) {
-            return false;
-        }
-        return getOrderLines() != null ? getOrderLines().equals(that.getOrderLines()) : that.getOrderLines() == null;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
-        result = 31 * result + (getShippingAddress() != null ? getShippingAddress().hashCode() : 0);
-        result = 31 * result + (getBillToAddress() != null ? getBillToAddress().hashCode() : 0);
-        result = 31 * result + (getOrderStatus() != null ? getOrderStatus().hashCode() : 0);
-        result = 31 * result + (getOrderLines() != null ? getOrderLines().hashCode() : 0);
-        return result;
+        return getClass().hashCode();
     }
 }
