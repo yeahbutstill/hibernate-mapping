@@ -1,26 +1,19 @@
 package com.yeahbutstill.hibernatemapping.repositories;
 
+import com.yeahbutstill.hibernatemapping.AbstractIntegrationTest;
 import com.yeahbutstill.hibernatemapping.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ActiveProfiles("local")
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Testcontainers
-class OrderHeaderRepositoryTest {
+class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
 
     @Container
     public static PostgreSQLContainer<?> pgsql = new PostgreSQLContainer<>("postgres:14");
@@ -67,6 +60,10 @@ class OrderHeaderRepositoryTest {
 
         orderHeader.addOrderLine(orderLine);
 
+        OrderApproval approval = new OrderApproval();
+        approval.setApprovedBy("me");
+        orderHeader.setOrderApproval(approval);
+
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         orderHeaderRepository.flush();
@@ -74,12 +71,12 @@ class OrderHeaderRepositoryTest {
         assertNotNull(savedOrder);
         assertNotNull(savedOrder.getId());
         assertNotNull(savedOrder.getOrderLines());
-        assertEquals(savedOrder.getOrderLines().size(), 1);
+        assertEquals(1, savedOrder.getOrderLines().size());
 
         OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
 
         assertNotNull(fetchedOrder);
-        assertEquals(fetchedOrder.getOrderLines().size(), 1);
+        assertEquals(1, fetchedOrder.getOrderLines().size());
     }
 
     @Test

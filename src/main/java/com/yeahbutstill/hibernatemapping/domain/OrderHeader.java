@@ -67,7 +67,7 @@ public class OrderHeader extends BaseEntity {
     @ToString.Exclude
     private Set<OrderLine> orderLines;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST})
     private OrderApproval orderApproval;
 
     public void addOrderLine(OrderLine orderLine) {
@@ -81,8 +81,12 @@ public class OrderHeader extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
         OrderHeader that = (OrderHeader) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
