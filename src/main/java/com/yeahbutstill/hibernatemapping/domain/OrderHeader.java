@@ -67,7 +67,7 @@ public class OrderHeader extends BaseEntity {
     @ToString.Exclude
     private Set<OrderLine> orderLines;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
     private OrderApproval orderApproval;
 
     public void addOrderLine(OrderLine orderLine) {
