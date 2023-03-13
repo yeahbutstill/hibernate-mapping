@@ -33,15 +33,23 @@ public abstract class AbstractIntegrationTest {
     static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
         @Container
-        public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"));
+        public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
+                DockerImageName.parse("postgres:14-alpine"))
+                .withNetwork(null)
+                .withReuse(true);
 
         @Container
-        public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:7.0.9-alpine"))
+        public static GenericContainer<?> redis = new GenericContainer<>(
+                DockerImageName.parse("redis:7.0.9-alpine"))
+                .withNetwork(null)
+                .withReuse(true)
                 .withExposedPorts(6379);
 
         @Container
-        public static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
-
+        public static KafkaContainer kafka = new KafkaContainer(
+                DockerImageName.parse("confluentinc/cp-kafka:6.2.1"))
+                .withNetwork(null)
+                .withReuse(true);
 
         @DynamicPropertySource
         public static Map<String, String> getProperties() {

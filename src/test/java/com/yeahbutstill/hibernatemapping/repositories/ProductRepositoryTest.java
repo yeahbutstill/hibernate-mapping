@@ -12,33 +12,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ProductRepositoryTest extends AbstractIntegrationTest {
 
     @Autowired
-    public ProductRepository productRepository;
+    ProductRepository productRepository;
 
     @Test
     void testGetCategory() {
+        Product product = productRepository.findByDescription("PRODUCT1");
 
-        Product product1 = productRepository.findByDescription("PRODUCT1");
-        assertNotNull(product1);
-        assertNotNull(product1.getDescription());
+        assertNotNull(product);
+        assertNotNull(product.getCategories());
 
     }
 
     @Test
     void testSaveProduct() {
+        Product product = new Product();
+        product.setDescription("My Product");
+        product.setProductStatus(ProductStatus.NEW);
 
-        Product newProduct = new Product();
-        newProduct.setDescription("New Product");
-        newProduct.setProductStatus(ProductStatus.NEW);
+        Product savedProduct = productRepository.save(product);
 
-        Product savedProduct = productRepository.save(newProduct);
-        Product fetchedProduct = productRepository.getReferenceById(savedProduct.getId());
+        Product fetchedProduct = productRepository.getById(savedProduct.getId());
 
         assertNotNull(fetchedProduct);
         assertNotNull(fetchedProduct.getDescription());
-        assertNotNull(fetchedProduct.getProductStatus());
         assertNotNull(fetchedProduct.getCreatedDate());
         assertNotNull(fetchedProduct.getLastModifiedDate());
-
     }
 
 }

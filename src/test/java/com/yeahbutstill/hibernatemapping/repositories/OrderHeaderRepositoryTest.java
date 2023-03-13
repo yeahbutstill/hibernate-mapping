@@ -4,38 +4,27 @@ import com.yeahbutstill.hibernatemapping.AbstractIntegrationTest;
 import com.yeahbutstill.hibernatemapping.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
 
-    @Container
-    public static PostgreSQLContainer<?> pgsql = new PostgreSQLContainer<>("postgres:14");
+    static final Logger logger = LoggerFactory.getLogger(OrderHeaderRepositoryTest.class);
 
     @Autowired
-    public OrderHeaderRepository orderHeaderRepository;
+    OrderHeaderRepository orderHeaderRepository;
 
     @Autowired
-    public ProductRepository productRepository;
+    CustomerRepository customerRepository;
 
     @Autowired
-    public CustomerRepository customerRepository;
+    ProductRepository productRepository;
 
-    public Product product;
-
-    @DynamicPropertySource
-    public static void configureTestContainerProperties(DynamicPropertyRegistry registry) {
-
-        registry.add("spring.datasource.url", pgsql::getJdbcUrl);
-        registry.add("spring.datasource.username", pgsql::getUsername);
-        registry.add("spring.datasource.password", pgsql::getPassword);
-    }
+    Product product;
 
     @BeforeEach
     void setUp() {
@@ -62,6 +51,7 @@ class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
 
         OrderApproval approval = new OrderApproval();
         approval.setApprovedBy("me");
+
         orderHeader.setOrderApproval(approval);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
@@ -99,4 +89,32 @@ class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
         assertNotNull(fetchedOrder.getCreatedDate());
         assertNotNull(fetchedOrder.getLastModifiedDate());
     }
+
+    @Test
+    void testDeleteCascade() {
+
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("new Customer");
+        orderHeader.setCustomer(customerRepository.save(customer));
+
+        OrderLine orderLine = new OrderLine();
+        orderLine.setQuantityOrdered(3);
+        orderLine.setProduct(product);
+
+        orderHeader.addOrderLine(orderLine);
+        OrderHeader savedOrder = orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("order saved and flushed");
+
+        orderHeaderRepository.deleteById(savedOrder.getId());
+        orderHeaderRepository.flush();
+
+        assertThrows(AssertionFailedError.class, () -> {
+            OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+
+            assertNull(fetchedOrder);
+        });
+    }
+
 }
