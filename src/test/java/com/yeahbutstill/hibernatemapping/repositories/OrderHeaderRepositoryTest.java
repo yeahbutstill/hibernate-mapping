@@ -5,15 +5,11 @@ import com.yeahbutstill.hibernatemapping.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
-
-    static final Logger logger = LoggerFactory.getLogger(OrderHeaderRepositoryTest.class);
 
     @Autowired
     OrderHeaderRepository orderHeaderRepository;
@@ -106,7 +102,6 @@ class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
         orderApproval.setApprovedBy("me");
         orderHeader.setOrderApproval(orderApproval);
 
-
         orderHeader.addOrderLine(orderLine);
         OrderHeader savedOrder = orderHeaderRepository.saveAndFlush(orderHeader);
 
@@ -114,12 +109,8 @@ class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
 
         orderHeaderRepository.deleteById(savedOrder.getId());
         orderHeaderRepository.flush();
-
-        assertThrows(AssertionFailedError.class, () -> {
-            OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
-
-            assertNull(fetchedOrder);
-        });
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+        assertThrows(AssertionFailedError.class, () -> assertNull(fetchedOrder));
     }
 
 }

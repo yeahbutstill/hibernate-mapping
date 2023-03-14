@@ -3,40 +3,29 @@ package com.yeahbutstill.hibernatemapping.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import lombok.*;
-import org.hibernate.Hibernate;
-
-import java.util.Objects;
 
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@ToString
 public class OrderApproval extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "order_header_id")
     private OrderHeader orderHeader;
-
     private String approvedBy;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-            return false;
-        }
-        OrderApproval that = (OrderApproval) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+    public String getApprovedBy() {
+        return approvedBy;
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
+    public OrderHeader getOrderHeader() {
+        return orderHeader;
+    }
+
+    public void setOrderHeader(OrderHeader orderHeader) {
+        this.orderHeader = orderHeader;
     }
 }

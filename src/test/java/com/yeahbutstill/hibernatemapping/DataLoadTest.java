@@ -4,20 +4,22 @@ import com.yeahbutstill.hibernatemapping.domain.*;
 import com.yeahbutstill.hibernatemapping.repositories.CustomerRepository;
 import com.yeahbutstill.hibernatemapping.repositories.OrderHeaderRepository;
 import com.yeahbutstill.hibernatemapping.repositories.ProductRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.ArrayList;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DataLoadTest extends AbstractIntegrationTest {
 
     final String PRODUCT_D1 = "Product 1";
-    final String PRODUCT_02 = "Product 2";
-    final String PRODUCT_03 = "Product 3";
+    final String PRODUCT_D2 = "Product 2";
+    final String PRODUCT_D3 = "Product 3";
     final String TEST_CUSTOMER = "Test Customer";
 
     @Autowired
@@ -30,24 +32,43 @@ class DataLoadTest extends AbstractIntegrationTest {
     ProductRepository productRepository;
 
     @Test
-    void testLeazyVsEager() {
+    @Order(3)
+    void testNPlusOneProblem() {
 
-        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(100L);
-        Assertions.assertEquals(100L, orderHeader.getId());
-        Assertions.assertEquals("Test Customer", orderHeader.getCustomer().getCustomerName());
+        Customer customer = customerRepository.findCustomerByCustomerNameIgnoreCase(TEST_CUSTOMER).orElseGet(this::getOrSaveCustomer);
+
+        IntSummaryStatistics totalOrdered = orderHeaderRepository.findAllByCustomer(customer).stream()
+                .flatMap(orderHeader -> orderHeader.getOrderLines().stream())
+                .collect(Collectors.summarizingInt(OrderLine::getQuantityOrdered));
+
+        Assertions.assertNotNull(totalOrdered);
 
     }
 
-    @Rollback(value = false) // so normaly by default spring boot will roll back.
     @Test
+    @Order(2)
+    void testLazyVsEager() {
+
+        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(5L);
+
+        Assertions.assertNotNull(orderHeader.getId());
+        Assertions.assertNotNull(orderHeader.getCustomer().getCustomerName());
+
+    }
+
+
+    @Rollback(value = false)
+    @Test
+    @Order(1)
     void testDataLoader() {
 
         List<Product> products = loadProducts();
         Customer customer = loadCustomers();
 
-        int ordersToCreate = 1001;
+        int ordersToCreate = 100;
 
         for (int i = 0; i < ordersToCreate; i++) {
+            System.out.println("Creating order #: " + i);
             saveOrder(customer, products);
         }
 
@@ -57,7 +78,6 @@ class DataLoadTest extends AbstractIntegrationTest {
     }
 
     private OrderHeader saveOrder(Customer customer, List<Product> products) {
-
         Random random = new Random();
 
         OrderHeader orderHeader = new OrderHeader();
@@ -72,35 +92,33 @@ class DataLoadTest extends AbstractIntegrationTest {
         });
 
         return orderHeaderRepository.save(orderHeader);
-
     }
 
     private Customer loadCustomers() {
-        return getOrSaveCustomer(TEST_CUSTOMER);
+        return getOrSaveCustomer();
     }
 
-    private Customer getOrSaveCustomer(String customerName) {
-        return customerRepository.findCustomerByCustomerNameIgnoreCase(customerName)
+    private Customer getOrSaveCustomer() {
+        return customerRepository.findCustomerByCustomerNameIgnoreCase("Test Customer")
                 .orElseGet(() -> {
                     Customer c1 = new Customer();
-                    c1.setCustomerName(customerName);
+                    c1.setCustomerName("Test Customer");
                     c1.setEmail("test@example.com");
                     Address address = new Address();
                     address.setAddress("123 Main");
-                    address.setCity("Citayam");
-                    address.setState("JPN");
+                    address.setCity("New Orleans");
+                    address.setState("LA");
                     c1.setAddress(address);
-
                     return customerRepository.save(c1);
                 });
     }
 
     private List<Product> loadProducts() {
-
         List<Product> products = new ArrayList<>();
+
         products.add(getOrSaveProduct(PRODUCT_D1));
-        products.add(getOrSaveProduct(PRODUCT_02));
-        products.add(getOrSaveProduct(PRODUCT_03));
+        products.add(getOrSaveProduct(PRODUCT_D2));
+        products.add(getOrSaveProduct(PRODUCT_D3));
 
         return products;
     }
@@ -111,7 +129,6 @@ class DataLoadTest extends AbstractIntegrationTest {
                     Product p1 = new Product();
                     p1.setDescription(description);
                     p1.setProductStatus(ProductStatus.NEW);
-
                     return productRepository.save(p1);
                 });
     }
