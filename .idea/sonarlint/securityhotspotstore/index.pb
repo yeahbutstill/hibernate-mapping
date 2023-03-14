@@ -14,8 +14,6 @@ v
 Fsrc/main/java/com/yeahbutstill/hibernatemapping/domain/BaseEntity.java,9/0/90a24c7c54e21c860fa1a7f5385b9536d28d1a26
 t
 Dsrc/main/java/com/yeahbutstill/hibernatemapping/domain/Category.java,4/1/4125d7bdb629909f40de534d980b518cc87bf8c9
-t
-Dsrc/main/java/com/yeahbutstill/hibernatemapping/domain/Customer.java,7/7/77a1a9f6421f1b97fa10278d9645569224015a12
 u
 Esrc/main/java/com/yeahbutstill/hibernatemapping/domain/OrderLine.java,0/a/0af356af452ab8d68e6af96611c2a05a66602c1d
 w
@@ -36,3 +34,5 @@ Isrc/main/java/com/yeahbutstill/hibernatemapping/domain/OrderApproval.java,f/b/
 Tsrc/main/java/com/yeahbutstill/hibernatemapping/repositories/CustomerRepository.java,8/2/82650b871d12914d5d89d29f22b7fb63225ac43b
 ƒ
 Ssrc/main/java/com/yeahbutstill/hibernatemapping/repositories/ProductRepository.java,1/3/134016efd4c21c239d70fefb5c7498d38ef352ed
+…
+Usrc/test/java/com/yeahbutstill/hibernatemapping/HibernateMappingApplicationTests.java,0/4/04ae43b69c4a986bb6896c40a0328490970800c0

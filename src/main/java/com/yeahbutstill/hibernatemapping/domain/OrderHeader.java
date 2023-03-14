@@ -25,7 +25,8 @@ import java.util.Set;
 @ToString
 public class OrderHeader extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Customer customer;
 
     @Embedded

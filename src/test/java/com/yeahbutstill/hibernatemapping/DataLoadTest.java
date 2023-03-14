@@ -29,7 +29,15 @@ class DataLoadTest extends AbstractIntegrationTest {
     @Autowired
     ProductRepository productRepository;
 
-    //@Disabled
+    @Test
+    void testLeazyVsEager() {
+
+        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(100L);
+        Assertions.assertEquals(100L, orderHeader.getId());
+        Assertions.assertEquals("Test Customer", orderHeader.getCustomer().getCustomerName());
+
+    }
+
     @Rollback(value = false) // so normaly by default spring boot will roll back.
     @Test
     void testDataLoader() {
@@ -37,7 +45,7 @@ class DataLoadTest extends AbstractIntegrationTest {
         List<Product> products = loadProducts();
         Customer customer = loadCustomers();
 
-        int ordersToCreate = 100;
+        int ordersToCreate = 1001;
 
         for (int i = 0; i < ordersToCreate; i++) {
             saveOrder(customer, products);
