@@ -6,6 +6,8 @@ import com.yeahbutstill.hibernatemapping.domain.ProductStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
@@ -16,27 +18,30 @@ class ProductRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     void testGetCategory() {
-        Product product = productRepository.findByDescription("PRODUCT1");
+
+        Optional<Product> product = productRepository.findByDescription("PRODUCT1");
 
         assertNotNull(product);
-        assertNotNull(product.getCategories());
+        assertNotNull(product.orElseThrow().getCategories());
 
     }
 
     @Test
     void testSaveProduct() {
+
         Product product = new Product();
         product.setDescription("My Product");
         product.setProductStatus(ProductStatus.NEW);
 
         Product savedProduct = productRepository.save(product);
 
-        Product fetchedProduct = productRepository.getById(savedProduct.getId());
+        Product fetchedProduct = productRepository.getReferenceById(savedProduct.getId());
 
         assertNotNull(fetchedProduct);
         assertNotNull(fetchedProduct.getDescription());
         assertNotNull(fetchedProduct.getCreatedDate());
         assertNotNull(fetchedProduct.getLastModifiedDate());
+
     }
 
 }
