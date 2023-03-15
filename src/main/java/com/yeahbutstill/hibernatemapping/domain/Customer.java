@@ -3,6 +3,7 @@ package com.yeahbutstill.hibernatemapping.domain;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -25,6 +26,8 @@ public class Customer extends BaseEntity {
 
   private String phone;
   private String email;
+
+  @Version private Integer version;
 
   @OneToMany(mappedBy = "customer")
   private Set<OrderHeader> orders = new LinkedHashSet<>();
