@@ -1,67 +1,45 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
+import java.sql.Timestamp;
+import java.util.Objects;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
-
-
 @MappedSuperclass
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private Timestamp createdDate;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @UpdateTimestamp
-    private Timestamp lastModifiedDate;
+  @CreationTimestamp
+  @Column(updatable = false)
+  private Timestamp createdDate;
 
-    public Long getId() {
-        return id;
+  @UpdateTimestamp private Timestamp lastModifiedDate;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setId(Long id) {
-        this.id = id;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+      return false;
     }
+    BaseEntity that = (BaseEntity) o;
+    return getId() != null && Objects.equals(getId(), that.getId());
+  }
 
-    public Timestamp getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Timestamp createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Timestamp getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Timestamp lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseEntity)) return false;
-
-        BaseEntity that = (BaseEntity) o;
-
-        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getCreatedDate() != null ? !getCreatedDate().equals(that.getCreatedDate()) : that.getCreatedDate() != null)
-            return false;
-        return getLastModifiedDate() != null ? getLastModifiedDate().equals(that.getLastModifiedDate()) : that.getLastModifiedDate() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getCreatedDate() != null ? getCreatedDate().hashCode() : 0);
-        result = 31 * result + (getLastModifiedDate() != null ? getLastModifiedDate().hashCode() : 0);
-        return result;
-    }
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

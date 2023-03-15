@@ -13,5 +13,6 @@
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/Product.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderStatus.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderLine.java
+/home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/bootstrap/Bootstrap.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderHeader.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/repositories/OrderApprovalRepository.java

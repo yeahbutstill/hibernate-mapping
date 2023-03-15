@@ -4,58 +4,62 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-
+import java.util.Objects;
 import java.util.Set;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class Category extends BaseEntity {
 
-    private String description;
+  private String description;
 
-    @ManyToMany
-    @JoinTable(name = "product_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> products;
+  @ManyToMany
+  @JoinTable(
+      name = "product_category",
+      joinColumns = @JoinColumn(name = "category_id"),
+      inverseJoinColumns = @JoinColumn(name = "product_id"))
+  private Set<Product> products;
 
-    public String getDescription() {
-        return description;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+      return false;
     }
+    Category category = (Category) o;
+    return getId() != null && Objects.equals(getId(), category.getId());
+  }
 
-    public Set<Product> getProducts() {
-        return products;
-    }
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Category)) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        Category category = (Category) o;
-
-        return getDescription() != null ? getDescription().equals(category.getDescription()) : category.getDescription() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        return result;
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName()
+        + "("
+        + "id = "
+        + getId()
+        + ", "
+        + "createdDate = "
+        + getCreatedDate()
+        + ", "
+        + "lastModifiedDate = "
+        + getLastModifiedDate()
+        + ", "
+        + "description = "
+        + getDescription()
+        + ")";
+  }
 }

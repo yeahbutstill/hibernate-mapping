@@ -1,54 +1,38 @@
 package com.yeahbutstill.hibernatemapping.repositories;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import com.yeahbutstill.hibernatemapping.AbstractIntegrationTest;
 import com.yeahbutstill.hibernatemapping.domain.Product;
 import com.yeahbutstill.hibernatemapping.domain.ProductStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 class ProductRepositoryTest extends AbstractIntegrationTest {
 
-    @Autowired
-    ProductRepository productRepository;
+  @Autowired ProductRepository productRepository;
 
-    @Test
-    void testGetCategory() {
-        Product product = productRepository.findByDescription("PRODUCT1").get();
+  @Test
+  void testGetCategory() {
+    Product product = productRepository.findByDescription("PRODUCT1").get();
 
-        assertNotNull(product);
-        assertNotNull(product.getCategories());
+    assertNotNull(product);
+    assertNotNull(product.getCategories());
+  }
 
-    }
+  @Test
+  void testSaveProduct() {
+    Product product = new Product();
+    product.setDescription("My Product");
+    product.setProductStatus(ProductStatus.NEW);
 
-    @Test
-    void testSaveProduct() {
-        Product product = new Product();
-        product.setDescription("My Product");
-        product.setProductStatus(ProductStatus.NEW);
+    Product savedProduct = productRepository.save(product);
 
-        Product savedProduct = productRepository.save(product);
+    Product fetchedProduct = productRepository.getReferenceById(savedProduct.getId());
 
-        Product fetchedProduct = productRepository.getReferenceById(savedProduct.getId());
-
-        assertNotNull(fetchedProduct);
-        assertNotNull(fetchedProduct.getDescription());
-        assertNotNull(fetchedProduct.getCreatedDate());
-        assertNotNull(fetchedProduct.getLastModifiedDate());
-    }
+    assertNotNull(fetchedProduct);
+    assertNotNull(fetchedProduct.getDescription());
+    assertNotNull(fetchedProduct.getCreatedDate());
+    assertNotNull(fetchedProduct.getLastModifiedDate());
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

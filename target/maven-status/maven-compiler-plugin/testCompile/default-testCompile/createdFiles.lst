@@ -1,5 +1,5 @@
 com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepositoryTest.class
-com/yeahbutstill/hibernatemapping/TestApplication.class
+com/yeahbutstill/hibernatemapping/DataLoadTest.class
 com/yeahbutstill/hibernatemapping/AbstractIntegrationTest$Initializer.class
 com/yeahbutstill/hibernatemapping/HibernateMappingApplicationTests.class
 com/yeahbutstill/hibernatemapping/AbstractIntegrationTest.class

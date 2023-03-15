@@ -1,65 +1,75 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
-
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class Customer extends BaseEntity {
 
-    private String customerName;
+  private String customerName;
 
-    @Embedded
-    private Address address;
+  @Embedded private Address address;
 
-    private String phone;
-    private String email;
+  private String phone;
+  private String email;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<OrderHeader> orders = new LinkedHashSet<>();
+  @OneToMany(mappedBy = "customer")
+  private Set<OrderHeader> orders = new LinkedHashSet<>();
 
-    public String getCustomerName() {
-        return customerName;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+      return false;
     }
+    Customer customer = (Customer) o;
+    return getId() != null && Objects.equals(getId(), customer.getId());
+  }
 
-    public Address getAddress() {
-        return address;
-    }
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Set<OrderHeader> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<OrderHeader> orders) {
-        this.orders = orders;
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName()
+        + "("
+        + "id = "
+        + getId()
+        + ", "
+        + "createdDate = "
+        + getCreatedDate()
+        + ", "
+        + "lastModifiedDate = "
+        + getLastModifiedDate()
+        + ", "
+        + "customerName = "
+        + getCustomerName()
+        + ", "
+        + "address = "
+        + getAddress()
+        + ", "
+        + "phone = "
+        + getPhone()
+        + ", "
+        + "email = "
+        + getEmail()
+        + ")";
+  }
 }

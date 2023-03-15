@@ -15,3 +15,4 @@ com/yeahbutstill/hibernatemapping/HibernateMappingApplication.class
 com/yeahbutstill/hibernatemapping/repositories/OrderApprovalRepository.class
 com/yeahbutstill/hibernatemapping/domain/Customer.class
 com/yeahbutstill/hibernatemapping/controller/OrderRestController.class
+com/yeahbutstill/hibernatemapping/bootstrap/Bootstrap.class
