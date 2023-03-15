@@ -11,6 +11,7 @@
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderApproval.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/controller/OrderRestController.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/Product.java
+/home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/bootstrap/BootStrapOrderService.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderStatus.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/domain/OrderLine.java
 /home/yeahbutstill/IdeaProjects/hibernate-mapping/src/main/java/com/yeahbutstill/hibernatemapping/bootstrap/Bootstrap.java

@@ -9,12 +9,14 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.event.EventListener;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -35,6 +37,9 @@ class DataLocalLoadTest {
   @Autowired CustomerRepository customerRepository;
 
   @Autowired ProductRepository productRepository;
+
+  @Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
+  private int batchSize;
 
   @Test
   void testDBLock() {
@@ -78,6 +83,7 @@ class DataLocalLoadTest {
     Assertions.assertNotNull(orderHeader.getCustomer().getCustomerName());
   }
 
+  @EventListener(ApplicationReadyEvent.class)
   @Rollback(value = false)
   @Test
   @Order(1)
@@ -86,16 +92,32 @@ class DataLocalLoadTest {
     List<Product> products = loadProducts();
     Customer customer = loadCustomers();
 
-    int ordersToCreate = 100;
+    int ordersToCreate = 10_000;
+    long start = System.currentTimeMillis();
+    log.info(
+        "Finished creating "
+            + ordersToCreate
+            + " objects in memory in:"
+            + (System.currentTimeMillis() - start) / 1000);
 
-    IntStream.range(0, ordersToCreate)
-        .forEach(
-            i -> {
-              System.out.println("Creating order #: " + i);
-              saveOrder(customer, products);
-            });
+    start = System.currentTimeMillis();
+    log.info("Inserting ..........");
 
-    orderHeaderRepository.flush();
+    for (int i = 0; i < ordersToCreate; i += batchSize) {
+      if (i + batchSize > ordersToCreate) {
+        saveOrder(customer, products);
+        break;
+      }
+      saveOrder(customer, products);
+      orderHeaderRepository.flush();
+    }
+
+    log.info(
+        "Finished inserting "
+            + ordersToCreate
+            + " objects in :"
+            + (System.currentTimeMillis() - start));
+
     Assertions.assertNotNull(saveOrder(customer, products));
   }
 

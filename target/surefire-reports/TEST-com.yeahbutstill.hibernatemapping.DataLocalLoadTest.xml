@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.yeahbutstill.hibernatemapping.domain.OrderHeaderTest" time="0.089" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.yeahbutstill.hibernatemapping.DataLocalLoadTest" time="4.935" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -55,6 +55,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testEquals" classname="com.yeahbutstill.hibernatemapping.domain.OrderHeaderTest" time="0.088"/>
-  <testcase name="testNotEquals" classname="com.yeahbutstill.hibernatemapping.domain.OrderHeaderTest" time="0.001"/>
+  <testcase name="testDataLoader" classname="com.yeahbutstill.hibernatemapping.DataLocalLoadTest" time="0.485"/>
+  <testcase name="testLazyVsEager" classname="com.yeahbutstill.hibernatemapping.DataLocalLoadTest" time="0.035"/>
+  <testcase name="testNPlusOneProblem" classname="com.yeahbutstill.hibernatemapping.DataLocalLoadTest" time="0.122"/>
+  <testcase name="testDBLock" classname="com.yeahbutstill.hibernatemapping.DataLocalLoadTest" time="0.032"/>
 </testsuite>
