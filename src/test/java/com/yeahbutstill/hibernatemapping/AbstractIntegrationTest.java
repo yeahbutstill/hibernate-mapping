@@ -34,22 +34,15 @@ public abstract class AbstractIntegrationTest {
 
     @Container
     public static PostgreSQLContainer<?> postgres =
-        new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"))
-            .withNetwork(null)
-            .withReuse(true);
+        new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"));
 
     @Container
     public static GenericContainer<?> redis =
-        new GenericContainer<>(DockerImageName.parse("redis:7.0.9-alpine"))
-            .withNetwork(null)
-            .withReuse(true)
-            .withExposedPorts(6379);
+        new GenericContainer<>(DockerImageName.parse("redis:7.0.9-alpine")).withExposedPorts(6379);
 
     @Container
     public static KafkaContainer kafka =
-        new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"))
-            .withNetwork(null)
-            .withReuse(true);
+        new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
 
     @DynamicPropertySource
     public static Map<String, String> getProperties() {

@@ -26,6 +26,8 @@ public class Product extends BaseEntity {
   @ToString.Exclude
   private Set<Category> categories;
 
+  private Integer quantityOnHand = 0;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

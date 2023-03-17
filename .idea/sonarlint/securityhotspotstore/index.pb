@@ -14,15 +14,9 @@ Tsrc/main/java/com/yeahbutstill/hibernatemapping/repositories/CategoryRepository
 Tsrc/main/java/com/yeahbutstill/hibernatemapping/repositories/CustomerRepository.java,8/2/82650b871d12914d5d89d29f22b7fb63225ac43b
 ‰
 Ysrc/main/java/com/yeahbutstill/hibernatemapping/repositories/OrderApprovalRepository.java,b/0/b0298dd1fb5f93f10fa55d39ae4566900402c164
-ƒ
-Ssrc/main/java/com/yeahbutstill/hibernatemapping/repositories/ProductRepository.java,1/3/134016efd4c21c239d70fefb5c7498d38ef352ed
 ‹
 [src/test/java/com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepositoryTest.java,e/9/e9fbb996462c92147c76f81c4b632a9bfdb9e01a
-‡
-Wsrc/test/java/com/yeahbutstill/hibernatemapping/repositories/ProductRepositoryTest.java,d/2/d2bf4bda7579f7b318104d03c4c151df9f45f62d
 7
 pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
-…
-Usrc/test/java/com/yeahbutstill/hibernatemapping/HibernateMappingApplicationTests.java,0/4/04ae43b69c4a986bb6896c40a0328490970800c0
 ‡
 Wsrc/main/java/com/yeahbutstill/hibernatemapping/repositories/OrderHeaderRepository.java,5/8/58c95884bc081de337aba0f39ea76acd806b02ce

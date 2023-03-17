@@ -16,9 +16,6 @@
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
   </component>
-  <component name="DBNavigator.Project.FileConnectionMappingManager">
-    <mapping file-url="file://$PROJECT_DIR$/src/main/resources/db/migration/V32303__order_approval_bidirectional.sql" connection-id="476df63b-2563-4398-9871-e36e8e0e19e7" session-id="MAIN" current-schema="test" />
-  </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
     <filters />
@@ -27,8 +24,8 @@
     <connections>
       <connection id="476df63b-2563-4398-9871-e36e8e0e19e7" active="true" signed="true">
         <database>
-          <name value="Connection" />
-          <description value="" />
+          <name value="orderservice" />
+          <description value="database order service" />
           <database-type value="POSTGRES" />
           <config-type value="BASIC" />
           <database-version value="14.7" />
@@ -37,11 +34,11 @@
           <driver value="" />
           <url-type value="DATABASE" />
           <host value="localhost" />
-          <port value="43599" />
-          <database value="test" />
+          <port value="5432" />
+          <database value="orderservice" />
           <type value="USER_PASSWORD" />
-          <user value="test" />
-          <deprecated-pwd value="dGVzdA==" />
+          <user value="orderuser" />
+          <deprecated-pwd value="UE5TSmt4WHZWTkRBaGVQTXVFeFRCdVJS" />
         </database>
         <properties>
           <auto-commit value="false" />
