@@ -7,10 +7,7 @@ import jakarta.persistence.Version;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 @Entity
@@ -18,6 +15,7 @@ import org.hibernate.Hibernate;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Customer extends BaseEntity {
 
   private String customerName;
@@ -30,6 +28,7 @@ public class Customer extends BaseEntity {
   @Version private Integer version;
 
   @OneToMany(mappedBy = "customer")
+  @ToString.Exclude
   private Set<OrderHeader> orders = new LinkedHashSet<>();
 
   @Override
@@ -47,32 +46,5 @@ public class Customer extends BaseEntity {
   @Override
   public int hashCode() {
     return getClass().hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName()
-        + "("
-        + "id = "
-        + getId()
-        + ", "
-        + "createdDate = "
-        + getCreatedDate()
-        + ", "
-        + "lastModifiedDate = "
-        + getLastModifiedDate()
-        + ", "
-        + "customerName = "
-        + getCustomerName()
-        + ", "
-        + "address = "
-        + getAddress()
-        + ", "
-        + "phone = "
-        + getPhone()
-        + ", "
-        + "email = "
-        + getEmail()
-        + ")";
   }
 }

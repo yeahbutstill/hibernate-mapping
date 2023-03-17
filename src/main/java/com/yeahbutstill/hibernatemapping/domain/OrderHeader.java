@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -25,9 +22,13 @@ import org.hibernate.annotations.FetchMode;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class OrderHeader extends BaseEntity {
 
+  @Version private Integer version;
+
   @ManyToOne(fetch = FetchType.LAZY)
+  @ToString.Exclude
   private Customer customer;
 
   @Embedded private Address shippingAddress;
@@ -72,32 +73,5 @@ public class OrderHeader extends BaseEntity {
   @Override
   public int hashCode() {
     return getClass().hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName()
-        + "("
-        + "id = "
-        + getId()
-        + ", "
-        + "createdDate = "
-        + getCreatedDate()
-        + ", "
-        + "lastModifiedDate = "
-        + getLastModifiedDate()
-        + ", "
-        + "shippingAddress = "
-        + getShippingAddress()
-        + ", "
-        + "billToAddress = "
-        + getBillToAddress()
-        + ", "
-        + "orderStatus = "
-        + getOrderStatus()
-        + ", "
-        + "orderApproval = "
-        + getOrderApproval()
-        + ")";
   }
 }

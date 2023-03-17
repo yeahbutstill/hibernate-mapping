@@ -2,6 +2,7 @@ package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 import java.util.Objects;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -13,6 +14,8 @@ import org.hibernate.Hibernate;
 @Setter
 @ToString
 public class OrderLine extends BaseEntity {
+
+  @Version private Integer version;
 
   private Integer quantityOrdered;
 

@@ -6,10 +6,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import java.util.Objects;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 @Entity
@@ -17,6 +14,7 @@ import org.hibernate.Hibernate;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Category extends BaseEntity {
 
   private String description;
@@ -26,6 +24,7 @@ public class Category extends BaseEntity {
       name = "product_category",
       joinColumns = @JoinColumn(name = "category_id"),
       inverseJoinColumns = @JoinColumn(name = "product_id"))
+  @ToString.Exclude
   private Set<Product> products;
 
   @Override
@@ -43,23 +42,5 @@ public class Category extends BaseEntity {
   @Override
   public int hashCode() {
     return getClass().hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName()
-        + "("
-        + "id = "
-        + getId()
-        + ", "
-        + "createdDate = "
-        + getCreatedDate()
-        + ", "
-        + "lastModifiedDate = "
-        + getLastModifiedDate()
-        + ", "
-        + "description = "
-        + getDescription()
-        + ")";
   }
 }
