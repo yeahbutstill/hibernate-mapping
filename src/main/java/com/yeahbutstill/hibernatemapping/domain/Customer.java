@@ -8,9 +8,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -24,7 +24,7 @@ import java.util.Set;
 @ToString
 public class Customer extends BaseEntity {
 
-    @Length(max = 50)
+    @Size(max = 50)
     @NotBlank
     @NotEmpty
     private String customerName;
@@ -35,13 +35,13 @@ public class Customer extends BaseEntity {
 
     @NotEmpty
     @NotBlank
-    @Length(max = 20)
+    @Size(max = 20)
     private String phone;
 
     @NotEmpty
     @NotBlank
     @Email
-    @Length(max = 255)
+    @Size(max = 255)
     private String email;
 
     @Version
