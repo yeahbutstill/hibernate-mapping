@@ -3,9 +3,13 @@ package com.yeahbutstill.hibernatemapping.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import java.util.Objects;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -15,26 +19,29 @@ import org.hibernate.Hibernate;
 @ToString
 public class OrderApproval extends BaseEntity {
 
-  @OneToOne
-  @JoinColumn(name = "order_header_id")
-  private OrderHeader orderHeader;
+    @OneToOne
+    @JoinColumn(name = "order_header_id")
+    private OrderHeader orderHeader;
 
-  private String approvedBy;
+    @NotEmpty
+    @NotBlank
+    @Length(max = 50)
+    private String approvedBy;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        OrderApproval that = (OrderApproval) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    OrderApproval that = (OrderApproval) o;
-    return getId() != null && Objects.equals(getId(), that.getId());
-  }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 class HibernateMappingApplicationTests {
 
-  @Test
-  void contextLoads() {}
+    @Test
+    void contextLoads() {
+    }
 }

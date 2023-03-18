@@ -3,9 +3,12 @@ package com.yeahbutstill.hibernatemapping.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Version;
-import java.util.Objects;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
+
+import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
@@ -15,28 +18,33 @@ import org.hibernate.Hibernate;
 @ToString
 public class OrderLine extends BaseEntity {
 
-  @Version private Integer version;
+    @NotNull
+    @Min(1)
+    private Integer quantityOrdered;
 
-  private Integer quantityOrdered;
+    @Version
+    private Integer version;
 
-  @ManyToOne private OrderHeader orderHeader;
+    @ManyToOne
+    private OrderHeader orderHeader;
 
-  @ManyToOne private Product product;
+    @ManyToOne
+    private Product product;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        OrderLine orderLine = (OrderLine) o;
+        return getId() != null && Objects.equals(getId(), orderLine.getId());
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    OrderLine orderLine = (OrderLine) o;
-    return getId() != null && Objects.equals(getId(), orderLine.getId());
-  }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

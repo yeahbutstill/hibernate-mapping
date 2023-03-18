@@ -1,13 +1,15 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @AttributeOverride(name = "shippingAddress.address", column = @Column(name = "shipping_address"))
@@ -25,53 +27,58 @@ import org.hibernate.annotations.FetchMode;
 @ToString
 public class OrderHeader extends BaseEntity {
 
-  @Version private Integer version;
+    @Version
+    private Integer version;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @ToString.Exclude
-  private Customer customer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Customer customer;
 
-  @Embedded private Address shippingAddress;
+    @Valid
+    @Embedded
+    private Address shippingAddress;
 
-  @Embedded private Address billToAddress;
+    @Valid
+    @Embedded
+    private Address billToAddress;
 
-  @Enumerated(EnumType.STRING)
-  private OrderStatus orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
-  @OneToMany(
-      mappedBy = "orderHeader",
-      cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-      fetch = FetchType.EAGER)
-  @Fetch(FetchMode.SUBSELECT)
-  private Set<OrderLine> orderLines;
+    @OneToMany(
+            mappedBy = "orderHeader",
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<OrderLine> orderLines;
 
-  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  @Fetch(FetchMode.SELECT)
-  private OrderApproval orderApproval;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @Fetch(FetchMode.SELECT)
+    private OrderApproval orderApproval;
 
-  public void addOrderLine(OrderLine orderLine) {
-    if (orderLines == null) {
-      orderLines = new HashSet<>();
+    public void addOrderLine(OrderLine orderLine) {
+        if (orderLines == null) {
+            orderLines = new HashSet<>();
+        }
+
+        orderLines.add(orderLine);
+        orderLine.setOrderHeader(this);
     }
 
-    orderLines.add(orderLine);
-    orderLine.setOrderHeader(this);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        OrderHeader that = (OrderHeader) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    OrderHeader that = (OrderHeader) o;
-    return getId() != null && Objects.equals(getId(), that.getId());
-  }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -4,153 +4,184 @@ import com.yeahbutstill.hibernatemapping.domain.*;
 import com.yeahbutstill.hibernatemapping.repositories.CustomerRepository;
 import com.yeahbutstill.hibernatemapping.repositories.OrderHeaderRepository;
 import com.yeahbutstill.hibernatemapping.repositories.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.test.annotation.Rollback;
+
 import java.util.ArrayList;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Slf4j
 class DataLoadTest extends AbstractIntegrationTest {
 
-  final String PRODUCT_D1 = "Product 1";
-  final String PRODUCT_D2 = "Product 2";
-  final String PRODUCT_D3 = "Product 3";
-  final String TEST_CUSTOMER = "Test Customer";
+    final String PRODUCT_D1 = "Product 1";
+    final String PRODUCT_D2 = "Product 2";
+    final String PRODUCT_D3 = "Product 3";
+    final String TEST_CUSTOMER = "Test Customer";
 
-  @Autowired OrderHeaderRepository orderHeaderRepository;
+    @Autowired
+    OrderHeaderRepository orderHeaderRepository;
 
-  @Autowired CustomerRepository customerRepository;
+    @Autowired
+    CustomerRepository customerRepository;
 
-  @Autowired ProductRepository productRepository;
+    @Autowired
+    ProductRepository productRepository;
 
-  @Test
-  void testDBLock() {
+    @Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
+    private int batchSize;
 
-    Long id = 1L;
+    @Test
+    void testDBLock() {
 
-    OrderHeader orderHeader = orderHeaderRepository.findById(id).orElseGet(OrderHeader::new);
+        Long id = 1L;
 
-    Address billTo = new Address();
-    billTo.setAddress("Bill me");
-    orderHeader.setBillToAddress(billTo);
-    orderHeaderRepository.saveAndFlush(orderHeader);
+        OrderHeader orderHeader = orderHeaderRepository.findById(id).orElseGet(OrderHeader::new);
 
-    log.info("I updated the order");
-  }
+        Address billTo = new Address();
+        billTo.setAddress("Bill me");
+        billTo.setZipCode("haha");
+        billTo.setCity("hihi");
+        billTo.setState("lerlah");
+        orderHeader.setBillToAddress(billTo);
+        orderHeaderRepository.saveAndFlush(orderHeader);
 
-  @Test
-  @Order(3)
-  void testNPlusOneProblem() {
+        log.info("I updated the order");
+    }
 
-    Customer customer =
-        customerRepository
-            .findCustomerByCustomerNameIgnoreCase(TEST_CUSTOMER)
-            .orElseGet(this::getOrSaveCustomer);
+    @Test
+    @Order(3)
+    void testNPlusOneProblem() {
 
-    IntSummaryStatistics totalOrdered =
-        orderHeaderRepository.findAllByCustomer(customer).stream()
-            .flatMap(orderHeader -> orderHeader.getOrderLines().stream())
-            .collect(Collectors.summarizingInt(OrderLine::getQuantityOrdered));
+        Customer customer =
+                customerRepository
+                        .findCustomerByCustomerNameIgnoreCase(TEST_CUSTOMER)
+                        .orElseGet(this::getOrSaveCustomer);
 
-    Assertions.assertNotNull(totalOrdered);
-  }
+        IntSummaryStatistics totalOrdered =
+                orderHeaderRepository.findAllByCustomer(customer).stream()
+                        .flatMap(orderHeader -> orderHeader.getOrderLines().stream())
+                        .collect(Collectors.summarizingInt(OrderLine::getQuantityOrdered));
 
-  @Test
-  @Order(2)
-  void testLazyVsEager() {
+        Assertions.assertNotNull(totalOrdered);
+    }
 
-    OrderHeader orderHeader = orderHeaderRepository.getReferenceById(5L);
+    @Test
+    @Order(2)
+    void testLazyVsEager() {
 
-    Assertions.assertNotNull(orderHeader.getId());
-    Assertions.assertNotNull(orderHeader.getCustomer().getCustomerName());
-  }
+        OrderHeader orderHeader = orderHeaderRepository.getReferenceById(5L);
 
-  @Rollback(value = false)
-  @Test
-  @Order(1)
-  void testDataLoader() {
+        Assertions.assertNotNull(orderHeader.getId());
+        Assertions.assertNotNull(orderHeader.getCustomer().getCustomerName());
+    }
 
-    List<Product> products = loadProducts();
-    Customer customer = loadCustomers();
+    @EventListener(ApplicationReadyEvent.class)
+    @Rollback(value = false)
+    @Test
+    @Order(1)
+    void testDataLoader() {
 
-    int ordersToCreate = 100;
+        List<Product> products = loadProducts();
+        Customer customer = loadCustomers();
 
-    IntStream.range(0, ordersToCreate)
-        .forEach(
-            i -> {
-              System.out.println("Creating order #: " + i);
-              saveOrder(customer, products);
-            });
+        int ordersToCreate = 10_000;
+        long start = System.currentTimeMillis();
+        log.info(
+                "Finished creating "
+                        + ordersToCreate
+                        + " objects in memory in:"
+                        + (System.currentTimeMillis() - start) / 1000);
 
-    orderHeaderRepository.flush();
-    Assertions.assertNotNull(saveOrder(customer, products));
-  }
+        start = System.currentTimeMillis();
+        log.info("Inserting ..........");
 
-  private OrderHeader saveOrder(Customer customer, List<Product> products) {
-    Random random = new Random();
+        for (int i = 0; i < ordersToCreate; i += batchSize) {
+            if (i + batchSize > ordersToCreate) {
+                saveOrder(customer, products);
+                break;
+            }
+            saveOrder(customer, products);
+            orderHeaderRepository.flush();
+        }
 
-    OrderHeader orderHeader = new OrderHeader();
-    orderHeader.setCustomer(customer);
+        log.info(
+                "Finished inserting "
+                        + ordersToCreate
+                        + " objects in :"
+                        + (System.currentTimeMillis() - start));
 
-    products.forEach(
-        product -> {
-          OrderLine orderLine = new OrderLine();
-          orderLine.setProduct(product);
-          orderLine.setQuantityOrdered(random.nextInt(20));
-          // orderHeader.getOrderLines().add(orderLine);
-          orderHeader.addOrderLine(orderLine);
-        });
+        Assertions.assertNotNull(saveOrder(customer, products));
+    }
 
-    return orderHeaderRepository.save(orderHeader);
-  }
+    private OrderHeader saveOrder(Customer customer, List<Product> products) {
+        Random random = new Random();
 
-  private Customer loadCustomers() {
-    return getOrSaveCustomer();
-  }
+        OrderHeader orderHeader = new OrderHeader();
+        orderHeader.setCustomer(customer);
 
-  private Customer getOrSaveCustomer() {
-    return customerRepository
-        .findCustomerByCustomerNameIgnoreCase("Test Customer")
-        .orElseGet(
-            () -> {
-              Customer c1 = new Customer();
-              c1.setCustomerName("Test Customer");
-              c1.setEmail("test@example.com");
-              Address address = new Address();
-              address.setAddress("123 Main");
-              address.setCity("New Orleans");
-              address.setState("LA");
-              c1.setAddress(address);
-              return customerRepository.save(c1);
-            });
-  }
+        products.forEach(
+                product -> {
+                    OrderLine orderLine = new OrderLine();
+                    orderLine.setProduct(product);
+                    orderLine.setQuantityOrdered(random.nextInt(1, 1020));
+                    // orderHeader.getOrderLines().add(orderLine);
+                    orderHeader.addOrderLine(orderLine);
+                });
 
-  private List<Product> loadProducts() {
-    List<Product> products = new ArrayList<>();
+        return orderHeaderRepository.save(orderHeader);
+    }
 
-    products.add(getOrSaveProduct(PRODUCT_D1));
-    products.add(getOrSaveProduct(PRODUCT_D2));
-    products.add(getOrSaveProduct(PRODUCT_D3));
+    private Customer loadCustomers() {
+        return getOrSaveCustomer();
+    }
 
-    return products;
-  }
+    private Customer getOrSaveCustomer() {
+        return customerRepository
+                .findCustomerByCustomerNameIgnoreCase("Test Customer")
+                .orElseGet(
+                        () -> {
+                            Customer c1 = new Customer();
+                            c1.setCustomerName("Test Customer");
+                            c1.setEmail("test@example.com");
+                            c1.setPhone("09890808908");
+                            Address address = new Address();
+                            address.setAddress("123 Main");
+                            address.setCity("New Orleans");
+                            address.setState("LA");
+                            address.setZipCode("989898");
+                            c1.setAddress(address);
+                            return customerRepository.save(c1);
+                        });
+    }
 
-  private Product getOrSaveProduct(String description) {
-    return productRepository
-        .findByDescription(description)
-        .orElseGet(
-            () -> {
-              Product p1 = new Product();
-              p1.setDescription(description);
-              p1.setProductStatus(ProductStatus.NEW);
-              return productRepository.save(p1);
-            });
-  }
+    private List<Product> loadProducts() {
+        List<Product> products = new ArrayList<>();
+
+        products.add(getOrSaveProduct(PRODUCT_D1));
+        products.add(getOrSaveProduct(PRODUCT_D2));
+        products.add(getOrSaveProduct(PRODUCT_D3));
+
+        return products;
+    }
+
+    private Product getOrSaveProduct(String description) {
+        return productRepository
+                .findByDescription(description)
+                .orElseGet(
+                        () -> {
+                            Product p1 = new Product();
+                            p1.setDescription(description);
+                            p1.setProductStatus(ProductStatus.NEW);
+                            return productRepository.save(p1);
+                        });
+    }
 }

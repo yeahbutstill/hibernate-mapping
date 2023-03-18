@@ -15,51 +15,51 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class Bootstrap implements CommandLineRunner {
 
-  private final OrderHeaderRepository orderHeaderRepository;
-  private final BootStrapOrderService bootStrapOrderService;
-  private final CustomerRepository customerRepository;
-  private final ProductService productService;
+    private final OrderHeaderRepository orderHeaderRepository;
+    private final BootStrapOrderService bootStrapOrderService;
+    private final CustomerRepository customerRepository;
+    private final ProductService productService;
 
-  @Autowired
-  public Bootstrap(
-      OrderHeaderRepository orderHeaderRepository,
-      BootStrapOrderService bootStrapOrderService,
-      CustomerRepository customerRepository,
-      ProductService productService) {
-    this.orderHeaderRepository = orderHeaderRepository;
-    this.bootStrapOrderService = bootStrapOrderService;
-    this.customerRepository = customerRepository;
-    this.productService = productService;
-  }
+    @Autowired
+    public Bootstrap(
+            OrderHeaderRepository orderHeaderRepository,
+            BootStrapOrderService bootStrapOrderService,
+            CustomerRepository customerRepository,
+            ProductService productService) {
+        this.orderHeaderRepository = orderHeaderRepository;
+        this.bootStrapOrderService = bootStrapOrderService;
+        this.customerRepository = customerRepository;
+        this.productService = productService;
+    }
 
-  private void updateProduct() {
-    Product product = new Product();
-    product.setDescription("NTT Ler");
-    product.setProductStatus(ProductStatus.NEW);
+    private void updateProduct() {
+        Product product = new Product();
+        product.setDescription("NTT Ler");
+        product.setProductStatus(ProductStatus.NEW);
 
-    Product savedProduct = productService.savedProduct(product);
-    Product savedProduct1 = productService.updateQOH(savedProduct.getId(), 25);
-    log.info("Update Qty: {}", savedProduct1.getQuantityOnHand());
-  }
+        Product savedProduct = productService.savedProduct(product);
+        Product savedProduct1 = productService.updateQOH(savedProduct.getId(), 25);
+        log.info("Update Qty: {}", savedProduct1.getQuantityOnHand());
+    }
 
-  @Override
-  public void run(String... args) throws Exception {
-    updateProduct();
-    bootStrapOrderService.readOrderData();
+    @Override
+    public void run(String... args) throws Exception {
+        updateProduct();
+        bootStrapOrderService.readOrderData();
 
-    Customer customer = new Customer();
-    customer.setCustomerName("Testing version");
-    Customer savedCustomer = customerRepository.save(customer);
-    log.info("Version is - {}", savedCustomer.getVersion());
+        Customer customer = new Customer();
+        customer.setCustomerName("Testing version");
+        Customer savedCustomer = customerRepository.save(customer);
+        log.info("Version is - {}", savedCustomer.getVersion());
 
-    savedCustomer.setCustomerName("Testing version 2");
-    Customer savedCustomer1 = customerRepository.save(savedCustomer);
-    log.info("Version is - {}", savedCustomer1.getVersion());
+        savedCustomer.setCustomerName("Testing version 2");
+        Customer savedCustomer1 = customerRepository.save(savedCustomer);
+        log.info("Version is - {}", savedCustomer1.getVersion());
 
-    savedCustomer1.setCustomerName("Testing version 3");
-    Customer savedCustomer2 = customerRepository.save(savedCustomer1);
-    log.info("Version is - {}", savedCustomer2.getVersion());
+        savedCustomer1.setCustomerName("Testing version 3");
+        Customer savedCustomer2 = customerRepository.save(savedCustomer1);
+        log.info("Version is - {}", savedCustomer2.getVersion());
 
-    customerRepository.delete(savedCustomer2);
-  }
+        customerRepository.delete(savedCustomer2);
+    }
 }

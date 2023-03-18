@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class OrderRestController {
 
-  private final OrderHeaderRepository repository;
+    private final OrderHeaderRepository repository;
 
-  OrderRestController(OrderHeaderRepository repository) {
-    this.repository = repository;
-  }
+    OrderRestController(OrderHeaderRepository repository) {
+        this.repository = repository;
+    }
 
-  @GetMapping("/orders")
-  Iterable<OrderHeader> get() {
-    return repository.findAll();
-  }
+    @GetMapping("/orders")
+    Iterable<OrderHeader> get() {
+        return repository.findAll();
+    }
 }

@@ -7,27 +7,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
-  private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-  @Autowired
-  public ProductServiceImpl(ProductRepository productRepository) {
-    this.productRepository = productRepository;
-  }
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
-  @Override
-  public Product savedProduct(Product product) {
-    return productRepository.saveAndFlush(product);
-  }
+    @Override
+    public Product savedProduct(Product product) {
+        return productRepository.saveAndFlush(product);
+    }
 
-  @Transactional
-  @Override
-  public Product updateQOH(Long id, Integer quantityOnHand) {
-    Product product = productRepository.findById(id).orElseThrow();
-    product.setQuantityOnHand(quantityOnHand);
+    @Transactional
+    @Override
+    public Product updateQOH(Long id, Integer quantityOnHand) {
+        Product product = productRepository.findById(id).orElseThrow();
+        product.setQuantityOnHand(quantityOnHand);
 
-    return productRepository.saveAndFlush(product);
-  }
+        return productRepository.saveAndFlush(product);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Product getProductById(Long productId) {
+        return productRepository.getReferenceById(productId);
+    }
 }

@@ -4,11 +4,17 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
+import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Length;
+
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import lombok.*;
-import org.hibernate.Hibernate;
 
 @Entity
 @NoArgsConstructor
@@ -18,33 +24,47 @@ import org.hibernate.Hibernate;
 @ToString
 public class Customer extends BaseEntity {
 
-  private String customerName;
+    @Length(max = 50)
+    @NotBlank
+    @NotEmpty
+    private String customerName;
 
-  @Embedded private Address address;
+    @Valid
+    @Embedded
+    private Address address;
 
-  private String phone;
-  private String email;
+    @NotEmpty
+    @NotBlank
+    @Length(max = 20)
+    private String phone;
 
-  @Version private Integer version;
+    @NotEmpty
+    @NotBlank
+    @Email
+    @Length(max = 255)
+    private String email;
 
-  @OneToMany(mappedBy = "customer")
-  @ToString.Exclude
-  private Set<OrderHeader> orders = new LinkedHashSet<>();
+    @Version
+    private Integer version;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @OneToMany(mappedBy = "customer")
+    @ToString.Exclude
+    private Set<OrderHeader> orders = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Customer customer = (Customer) o;
+        return getId() != null && Objects.equals(getId(), customer.getId());
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    Customer customer = (Customer) o;
-    return getId() != null && Objects.equals(getId(), customer.getId());
-  }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

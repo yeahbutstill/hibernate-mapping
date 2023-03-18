@@ -1,7 +1,5 @@
 package com.yeahbutstill.hibernatemapping;
 
-import java.util.Map;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,6 +19,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startables;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Map;
+import java.util.stream.Stream;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = AbstractIntegrationTest.Initializer.class)
 @ActiveProfiles("local")
@@ -29,41 +30,41 @@ import org.testcontainers.utility.DockerImageName;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public abstract class AbstractIntegrationTest {
 
-  static class Initializer
-      implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    static class Initializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-    @Container
-    public static PostgreSQLContainer<?> postgres =
-        new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"));
+        @Container
+        public static PostgreSQLContainer<?> postgres =
+                new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"));
 
-    @Container
-    public static GenericContainer<?> redis =
-        new GenericContainer<>(DockerImageName.parse("redis:7.0.9-alpine")).withExposedPorts(6379);
+        @Container
+        public static GenericContainer<?> redis =
+                new GenericContainer<>(DockerImageName.parse("redis:7.0.9-alpine")).withExposedPorts(6379);
 
-    @Container
-    public static KafkaContainer kafka =
-        new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
+        @Container
+        public static KafkaContainer kafka =
+                new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
 
-    @DynamicPropertySource
-    public static Map<String, String> getProperties() {
+        @DynamicPropertySource
+        public static Map<String, String> getProperties() {
 
-      Startables.deepStart(Stream.of(redis, kafka, postgres)).join();
+            Startables.deepStart(Stream.of(redis, kafka, postgres)).join();
 
-      return Map.of(
-          "spring.datasource.url", postgres.getJdbcUrl(),
-          "spring.datasource.username", postgres.getUsername(),
-          "spring.datasource.password", postgres.getPassword(),
-          "spring.redis.host", redis.getHost(),
-          "spring.redis.port", redis.getFirstMappedPort() + "",
-          "spring.kafka.bootstrap-servers", kafka.getBootstrapServers());
+            return Map.of(
+                    "spring.datasource.url", postgres.getJdbcUrl(),
+                    "spring.datasource.username", postgres.getUsername(),
+                    "spring.datasource.password", postgres.getPassword(),
+                    "spring.redis.host", redis.getHost(),
+                    "spring.redis.port", redis.getFirstMappedPort() + "",
+                    "spring.kafka.bootstrap-servers", kafka.getBootstrapServers());
+        }
+
+        @Override
+        public void initialize(ConfigurableApplicationContext context) {
+
+            ConfigurableEnvironment env = context.getEnvironment();
+            env.getPropertySources()
+                    .addFirst(new MapPropertySource("testcontainers", (Map) getProperties()));
+        }
     }
-
-    @Override
-    public void initialize(ConfigurableApplicationContext context) {
-
-      ConfigurableEnvironment env = context.getEnvironment();
-      env.getPropertySources()
-          .addFirst(new MapPropertySource("testcontainers", (Map) getProperties()));
-    }
-  }
 }

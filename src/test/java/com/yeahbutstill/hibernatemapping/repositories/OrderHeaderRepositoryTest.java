@@ -1,7 +1,5 @@
 package com.yeahbutstill.hibernatemapping.repositories;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.yeahbutstill.hibernatemapping.AbstractIntegrationTest;
 import com.yeahbutstill.hibernatemapping.domain.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,104 +7,123 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class OrderHeaderRepositoryTest extends AbstractIntegrationTest {
 
-  @Autowired OrderHeaderRepository orderHeaderRepository;
+    @Autowired
+    OrderHeaderRepository orderHeaderRepository;
 
-  @Autowired CustomerRepository customerRepository;
+    @Autowired
+    CustomerRepository customerRepository;
 
-  @Autowired ProductRepository productRepository;
+    @Autowired
+    ProductRepository productRepository;
 
-  Product product;
+    Product product;
 
-  @BeforeEach
-  void setUp() {
-    Product newProduct = new Product();
-    newProduct.setProductStatus(ProductStatus.NEW);
-    newProduct.setDescription("test product");
-    product = productRepository.saveAndFlush(newProduct);
-  }
+    @BeforeEach
+    void setUp() {
+        Product newProduct = new Product();
+        newProduct.setProductStatus(ProductStatus.NEW);
+        newProduct.setDescription("test product");
+        product = productRepository.saveAndFlush(newProduct);
+    }
 
-  @Test
-  void testSaveOrderWithLine() {
-    OrderHeader orderHeader = new OrderHeader();
-    Customer customer = new Customer();
-    customer.setCustomerName("New Customer");
-    Customer savedCustomer = customerRepository.save(customer);
+    @Test
+    void testSaveOrderWithLine() {
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        customer.setEmail("wildanarifPM@tai.com");
+        customer.setPhone("678686768");
+        Customer savedCustomer = customerRepository.save(customer);
 
-    orderHeader.setCustomer(savedCustomer);
+        orderHeader.setCustomer(savedCustomer);
 
-    OrderLine orderLine = new OrderLine();
-    orderLine.setQuantityOrdered(5);
-    orderLine.setProduct(product);
+        OrderLine orderLine = new OrderLine();
+        orderLine.setQuantityOrdered(5);
+        orderLine.setProduct(product);
 
-    orderHeader.addOrderLine(orderLine);
+        orderHeader.addOrderLine(orderLine);
 
-    OrderApproval approval = new OrderApproval();
-    approval.setApprovedBy("me");
+        OrderApproval approval = new OrderApproval();
+        approval.setApprovedBy("me");
 
-    orderHeader.setOrderApproval(approval);
+        orderHeader.setOrderApproval(approval);
 
-    OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
+        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
-    orderHeaderRepository.flush();
+        orderHeaderRepository.flush();
 
-    assertNotNull(savedOrder);
-    assertNotNull(savedOrder.getId());
-    assertNotNull(savedOrder.getOrderLines());
-    assertEquals(1, savedOrder.getOrderLines().size());
+        assertNotNull(savedOrder);
+        assertNotNull(savedOrder.getId());
+        assertNotNull(savedOrder.getOrderLines());
+        assertEquals(1, savedOrder.getOrderLines().size());
 
-    OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
 
-    assertNotNull(fetchedOrder);
-    assertEquals(1, fetchedOrder.getOrderLines().size());
-  }
+        assertNotNull(fetchedOrder);
+        assertEquals(1, fetchedOrder.getOrderLines().size());
+    }
 
-  @Test
-  void testSaveOrder() {
-    OrderHeader orderHeader = new OrderHeader();
-    Customer customer = new Customer();
-    customer.setCustomerName("New Customer");
-    Customer savedCustomer = customerRepository.save(customer);
+    @Test
+    void testSaveOrder() {
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        customer.setPhone("2312321");
+        customer.setEmail("hahahaNTTPMler@ler.com");
 
-    orderHeader.setCustomer(savedCustomer);
-    OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
+        Address address = new Address();
+        address.setCity("Jakatah");
+        address.setState("Indonesia");
+        address.setAddress("Jalan-jalan ke bali naik bus");
+        address.setZipCode("378");
+        customer.setAddress(address);
 
-    assertNotNull(savedOrder);
-    assertNotNull(savedOrder.getId());
+        Customer savedCustomer = customerRepository.save(customer);
 
-    OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+        orderHeader.setCustomer(savedCustomer);
+        OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
-    assertNotNull(fetchedOrder);
-    assertNotNull(fetchedOrder.getId());
-    assertNotNull(fetchedOrder.getCreatedDate());
-    assertNotNull(fetchedOrder.getLastModifiedDate());
-  }
+        assertNotNull(savedOrder);
+        assertNotNull(savedOrder.getId());
 
-  @Test
-  void testDeleteCascade() {
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
 
-    OrderHeader orderHeader = new OrderHeader();
-    Customer customer = new Customer();
-    customer.setCustomerName("new Customer");
-    orderHeader.setCustomer(customerRepository.save(customer));
+        assertNotNull(fetchedOrder);
+        assertNotNull(fetchedOrder.getId());
+        assertNotNull(fetchedOrder.getCreatedDate());
+        assertNotNull(fetchedOrder.getLastModifiedDate());
+    }
 
-    OrderLine orderLine = new OrderLine();
-    orderLine.setQuantityOrdered(3);
-    orderLine.setProduct(product);
+    @Test
+    void testDeleteCascade() {
 
-    OrderApproval orderApproval = new OrderApproval();
-    orderApproval.setApprovedBy("me");
-    orderHeader.setOrderApproval(orderApproval);
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("new Customer");
+        customer.setPhone("9090909090");
+        customer.setEmail("yaelahPM@pmler.com");
+        orderHeader.setCustomer(customerRepository.save(customer));
 
-    orderHeader.addOrderLine(orderLine);
-    OrderHeader savedOrder = orderHeaderRepository.saveAndFlush(orderHeader);
+        OrderLine orderLine = new OrderLine();
+        orderLine.setQuantityOrdered(3);
+        orderLine.setProduct(product);
 
-    System.out.println("order saved and flushed");
+        OrderApproval orderApproval = new OrderApproval();
+        orderApproval.setApprovedBy("me");
+        orderHeader.setOrderApproval(orderApproval);
 
-    orderHeaderRepository.deleteById(savedOrder.getId());
-    orderHeaderRepository.flush();
-    OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
-    assertThrows(AssertionFailedError.class, () -> assertNull(fetchedOrder));
-  }
+        orderHeader.addOrderLine(orderLine);
+        OrderHeader savedOrder = orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("order saved and flushed");
+
+        orderHeaderRepository.deleteById(savedOrder.getId());
+        orderHeaderRepository.flush();
+        OrderHeader fetchedOrder = orderHeaderRepository.getReferenceById(savedOrder.getId());
+        assertThrows(AssertionFailedError.class, () -> assertNull(fetchedOrder));
+    }
 }

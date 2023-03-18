@@ -1,10 +1,16 @@
 package com.yeahbutstill.hibernatemapping.domain;
 
 import jakarta.persistence.*;
-import java.util.Objects;
-import java.util.Set;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -13,35 +19,41 @@ import org.hibernate.Hibernate;
 @Setter
 @ToString
 public class Product extends BaseEntity {
-  private String description;
 
-  @Enumerated(EnumType.STRING)
-  private ProductStatus productStatus;
+    @NotBlank
+    @NotEmpty
+    @Length(max = 100)
+    private String description;
 
-  @ManyToMany
-  @JoinTable(
-      name = "product_category",
-      joinColumns = @JoinColumn(name = "product_id"),
-      inverseJoinColumns = @JoinColumn(name = "category_id"))
-  @ToString.Exclude
-  private Set<Category> categories;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private ProductStatus productStatus;
 
-  private Integer quantityOnHand = 0;
+    @ManyToMany
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @ToString.Exclude
+    private Set<Category> categories;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Min(0)
+    private Integer quantityOnHand;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Product product = (Product) o;
+        return getId() != null && Objects.equals(getId(), product.getId());
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    Product product = (Product) o;
-    return getId() != null && Objects.equals(getId(), product.getId());
-  }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

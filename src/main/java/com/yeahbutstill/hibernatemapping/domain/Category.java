@@ -4,10 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import java.util.Objects;
-import java.util.Set;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Length;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -17,30 +21,33 @@ import org.hibernate.Hibernate;
 @ToString
 public class Category extends BaseEntity {
 
-  private String description;
+    @NotEmpty
+    @NotBlank
+    @Length(max = 50)
+    private String description;
 
-  @ManyToMany
-  @JoinTable(
-      name = "product_category",
-      joinColumns = @JoinColumn(name = "category_id"),
-      inverseJoinColumns = @JoinColumn(name = "product_id"))
-  @ToString.Exclude
-  private Set<Product> products;
+    @ManyToMany
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    @ToString.Exclude
+    private Set<Product> products;
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Category category = (Category) o;
+        return getId() != null && Objects.equals(getId(), category.getId());
     }
-    if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-      return false;
-    }
-    Category category = (Category) o;
-    return getId() != null && Objects.equals(getId(), category.getId());
-  }
 
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
