@@ -158,10 +158,12 @@ class DataLocalLoadTest {
                             Customer c1 = new Customer();
                             c1.setCustomerName("Test Customer");
                             c1.setEmail("test@example.com");
+                            c1.setPhone("HAHAHA");
                             Address address = new Address();
                             address.setAddress("123 Main");
                             address.setCity("New Orleans");
                             address.setState("LA");
+                            address.setZipCode("HAHAHA");
                             c1.setAddress(address);
                             return customerRepository.save(c1);
                         });

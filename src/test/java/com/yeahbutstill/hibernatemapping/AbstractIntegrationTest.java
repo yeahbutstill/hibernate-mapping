@@ -35,7 +35,7 @@ public abstract class AbstractIntegrationTest {
 
         @Container
         public static PostgreSQLContainer<?> postgres =
-                new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"));
+                new PostgreSQLContainer<>(DockerImageName.parse("postgres:15-alpine"));
 
         @Container
         public static GenericContainer<?> redis =

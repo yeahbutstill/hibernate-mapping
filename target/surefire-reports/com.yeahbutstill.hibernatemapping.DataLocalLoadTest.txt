@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.yeahbutstill.hibernatemapping.DataLocalLoadTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.195 s - in com.yeahbutstill.hibernatemapping.DataLocalLoadTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.368 s - in com.yeahbutstill.hibernatemapping.DataLocalLoadTest
