@@ -43,3 +43,13 @@ t
 Dsrc/main/java/com/yeahbutstill/hibernatemapping/domain/Category.java,4/1/4125d7bdb629909f40de534d980b518cc87bf8c9
 |
 Lsrc/test/java/com/yeahbutstill/hibernatemapping/AbstractIntegrationTest.java,5/9/5956e3fac299e06e75445bec4c623f21b307fdc5
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+7
+pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
+v
+Fsrc/main/java/com/yeahbutstill/hibernatemapping/domain/BaseEntity.java,9/0/90a24c7c54e21c860fa1a7f5385b9536d28d1a26
+q
+Asrc/test/java/com/yeahbutstill/hibernatemapping/DataLoadTest.java,0/e/0ef1f90308876e09fc6f339f0de15452599daeb5
+v
+Fsrc/test/java/com/yeahbutstill/hibernatemapping/DataLocalLoadTest.java,5/4/542d917bb0a9f24e8b02ec664e3d61f016f987cd
